@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "mern blog",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index",
     "dev": "nodemon index"
@@ -11,7 +12,10 @@
   "author": "João Lapas",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^7.0.4",
     "nodemon": "^2.0.22"
   }
 }

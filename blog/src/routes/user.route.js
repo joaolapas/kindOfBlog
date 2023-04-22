@@ -1,6 +1,16 @@
-const route = require("express").Router();
-const userController = require("../controllers/user.controller");
+import express from "express";
+const route = express.Router();
+import userController from "../controllers/user.controller.js";
 
-route.get("/", userController.hello);
 
-module.exports = route;
+import {
+  validateId,
+  validateUser,
+} from "../middlewares/global.middleware.js";
+
+route.post("/", userController.create);
+route.get("/", userController.findAll);
+route.get("/:id", validateId, validateUser, userController.findById);
+route.patch("/:id", validateId, validateUser, userController.update);
+
+export default route;
