@@ -1,11 +1,23 @@
-import Post from "../models/Post";
+import Post from "../models/Post.js";
 
 const serviceCreate = (body) => Post.create(body);
 
-const serviceFindAll = () => Post.find();
+const serviceFindAll = (limit, offset) =>
+  Post.find().sort({ _id: -1 }).skip(offset).limit(limit).populate("user");
+
+const countPosts = () => Post.countDocuments();
+
+const serviceTopPost = () => Post.findOne().sort({ _id: -1 }).populate("user");
 
 const serviceFindById = () => {};
 
 const serviceUpdate = () => {};
 
-export { serviceCreate, serviceFindAll, serviceFindById, serviceUpdate };
+export {
+  serviceCreate,
+  serviceFindAll,
+  countPosts,
+  serviceTopPost,
+  serviceFindById,
+  serviceUpdate,
+};
