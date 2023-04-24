@@ -11,7 +11,12 @@ const serviceTopPost = () => Post.findOne().sort({ _id: -1 }).populate("user");
 
 const serviceFindById = (id) => Post.findById(id).populate("user");
 
-const serviceUpdate = () => {};
+const serviceSearchByTitle = (title) =>
+  Post.find({
+    title: { $regex: `${title || ""}`, $options: "i" },
+  })
+    .sort({ _id: -1 })
+    .populate("user");
 
 export {
   serviceCreate,
@@ -19,5 +24,5 @@ export {
   countPosts,
   serviceTopPost,
   serviceFindById,
-  serviceUpdate,
+  serviceSearchByTitle,
 };

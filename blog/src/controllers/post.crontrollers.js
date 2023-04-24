@@ -5,6 +5,7 @@ import {
   countPosts,
   serviceTopPost,
   serviceFindById,
+  serviceSearchByTitle
 } from "../services/post.service.js";
 
 const create = async (req, res) => {
@@ -112,7 +113,7 @@ const findById = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await serviceFindById(id);
-    console.log(id);
+
     res.send({
       post: {
         id: post._id,
@@ -131,6 +132,30 @@ const findById = async (req, res) => {
   }
 };
 
-const update = (req, res) => {};
+const searchByTitle = async (req, res) => {
+  try {
+    const { title } = req.query;
+    const posts = await serviceSearchByTitle(title);
 
-export { create, findAll, topPost, findById, update };
+    if (posts.length === 0) {
+      res.status(400).send({ message: "No posts found" });
+    }
+    res.send({
+      results: posts.map((post) => ({
+        id: post._id,
+        title: post.title,
+        text: post.text,
+        banner: post.banner,
+        likes: post.likes,
+        comments: post.comments,
+        name: post.user.name,
+        username: post.user.username,
+        userAvatar: post.user.avatar,
+      })),
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+export { create, findAll, topPost, findById, searchByTitle };
