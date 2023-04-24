@@ -28,6 +28,17 @@ const serviceUpdate = (id, title, text, banner) =>
     { rawResult: true }
   );
 
+const serviceDeletePost = (id) => Post.findByIdAndRemove({ _id: id });
+
+const serviceLikePost = (postId, userId) =>
+  Post.findOneAndUpdate(
+    { _id: postId, "likes.userId": { $nin: [userId] } },
+    { $push: { likes: { userId, createdAt: new Date() } } }
+  );
+
+const serviceRemoveLike = (postId, userId) =>
+  Post.findOneAndUpdate({ _id: postId }, { $pull: { likes: { userId } } });
+
 export {
   serviceCreate,
   serviceFindAll,
@@ -37,4 +48,7 @@ export {
   serviceSearchByTitle,
   serviceByUser,
   serviceUpdate,
+  serviceDeletePost,
+  serviceLikePost,
+  serviceRemoveLike,
 };

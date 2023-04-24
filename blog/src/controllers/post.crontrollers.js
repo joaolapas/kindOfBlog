@@ -8,6 +8,9 @@ import {
   serviceSearchByTitle,
   serviceByUser,
   serviceUpdate,
+  serviceDeletePost,
+  serviceLikePost,
+  serviceRemoveLike,
 } from "../services/post.service.js";
 
 const create = async (req, res) => {
@@ -116,21 +119,25 @@ const findById = async (req, res) => {
     const { id } = req.params;
     const post = await serviceFindById(id);
 
-    res.send({
-      post: {
-        id: post._id,
-        title: post.title,
-        text: post.text,
-        banner: post.banner,
-        likes: post.likes,
-        comments: post.comments,
-        name: post.user.name,
-        username: post.user.username,
-        userAvatar: post.user.avatar,
-      },
-    });
+    if (!post) {
+      res.status(400).send({ message: "That post does not exist!" });
+    } else {
+      res.send({
+        post: {
+          id: post._id,
+          title: post.title,
+          text: post.text,
+          banner: post.banner,
+          likes: post.likes,
+          comments: post.comments,
+          name: post.user.name,
+          username: post.user.username,
+          userAvatar: post.user.avatar,
+        },
+      });
+    }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send({ message: err.message });
   }
 };
 
@@ -202,10 +209,48 @@ const update = async (req, res) => {
     await serviceUpdate(id, title, text, banner);
 
     res.send("Post updated successfully");
-
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-export { create, findAll, topPost, findById, searchByTitle, byUser, update };
+    const post = await serviceFindById(id);
+
+    if (post.user.id != req.userId) {
+      res.status(404).send({ message: "You don't have permission for that" });
+    }
+    await serviceDeletePost(id);
+
+    res.send("Post deleted successfully!");
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+const likePost = async (req, res) => {
+  const postId = req.params.id;
+  const { userId } = req.userId;
+
+  const like = await serviceLikePost(postId, userId);
+
+  if (!like) {
+    await serviceRemoveLike(postId, userId);
+    return res.status(200).send({ message: "Like removed" });
+  }
+
+  res.status(200).send({ message: "Liked!" });
+};
+
+export {
+  create,
+  findAll,
+  topPost,
+  findById,
+  searchByTitle,
+  byUser,
+  update,
+  deletePost,
+  likePost,
+};
