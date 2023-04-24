@@ -4,6 +4,7 @@ import {
   serviceFindAll,
   countPosts,
   serviceTopPost,
+  serviceFindById,
 } from "../services/post.service.js";
 
 const create = async (req, res) => {
@@ -107,7 +108,28 @@ const topPost = async (req, res) => {
   }
 };
 
-const findById = (req, res) => {};
+const findById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await serviceFindById(id);
+    console.log(id);
+    res.send({
+      post: {
+        id: post._id,
+        title: post.title,
+        text: post.text,
+        banner: post.banner,
+        likes: post.likes,
+        comments: post.comments,
+        name: post.user.name,
+        username: post.user.username,
+        userAvatar: post.user.avatar,
+      },
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
 
 const update = (req, res) => {};
 

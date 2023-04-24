@@ -9,7 +9,7 @@ const countPosts = () => Post.countDocuments();
 
 const serviceTopPost = () => Post.findOne().sort({ _id: -1 }).populate("user");
 
-const serviceFindById = () => {};
+const serviceFindById = (id) => Post.findById(id).populate("user");
 
 const serviceUpdate = () => {};
 
