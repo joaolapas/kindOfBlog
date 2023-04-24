@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create, findAll, topPost, findById, byUser, searchByTitle } from "../controllers/post.crontrollers.js";
+import { create, findAll, topPost, findById, byUser, searchByTitle, update } from "../controllers/post.crontrollers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -10,6 +10,7 @@ router.get('/', findAll);
 router.get('/top', topPost);
 router.get('/search', searchByTitle);
 router.get('/byUser', authMiddleware, byUser);
-router.get('/find/:id', authMiddleware, findById);
+router.get('/:id', authMiddleware, findById);
+router.patch('/:id', authMiddleware, update);
 
 export default router

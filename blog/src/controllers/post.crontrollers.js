@@ -7,6 +7,7 @@ import {
   serviceFindById,
   serviceSearchByTitle,
   serviceByUser,
+  serviceUpdate,
 } from "../services/post.service.js";
 
 const create = async (req, res) => {
@@ -182,4 +183,29 @@ const byUser = async (req, res) => {
   }
 };
 
-export { create, findAll, topPost, findById, searchByTitle, byUser };
+const update = async (req, res) => {
+  try {
+    const { title, text, banner } = req.body;
+    const { id } = req.params;
+
+    if (!title && !text && !banner) {
+      res.status(400).send({
+        message: "Submit at least one of the fields to update the post",
+      });
+    }
+
+    const posts = await serviceFindById(id);
+
+    if (posts.user.id != req.userId) {
+      res.status(404).send({ message: "You don't have permission for that" });
+    }
+    await serviceUpdate(id, title, text, banner);
+
+    res.send("Post updated successfully");
+
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export { create, findAll, topPost, findById, searchByTitle, byUser, update };
