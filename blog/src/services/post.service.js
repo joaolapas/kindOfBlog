@@ -18,6 +18,8 @@ const serviceSearchByTitle = (title) =>
     .sort({ _id: -1 })
     .populate("user");
 
+const serviceByUser = (id) => Post.find({user: id}).sort({_id: -1}).populate("user");
+
 export {
   serviceCreate,
   serviceFindAll,
@@ -25,4 +27,5 @@ export {
   serviceTopPost,
   serviceFindById,
   serviceSearchByTitle,
+  serviceByUser,
 };
