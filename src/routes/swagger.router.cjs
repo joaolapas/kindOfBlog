@@ -1,4 +1,4 @@
-const router = require("express").Router;
+const router = require("express").Router();
 
 const swagger = require("swagger-ui-express");
 const swaggerDoc = require("../swagger.json");
