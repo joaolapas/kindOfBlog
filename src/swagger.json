@@ -11,7 +11,7 @@
     "servers": [
   
       {
-        "url": "xxxxxxxxxxxxxxxx",
+        "url": "https://kind-of-blog-api.onrender.com",
         "description": "Render Server"
       },
       {
