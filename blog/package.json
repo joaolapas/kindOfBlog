@@ -2,11 +2,11 @@
   "name": "blog",
   "version": "1.0.0",
   "description": "mern blog",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index"
+    "start": "node src/index",
+    "dev": "nodemon src/index"
   },
   "keywords": [],
   "author": "João Lapas",
@@ -17,6 +17,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.4",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "swagger-ui-express": "^4.6.2"
   }
 }

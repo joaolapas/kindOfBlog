@@ -11,6 +11,8 @@ import {
   serviceDeletePost,
   serviceLikePost,
   serviceRemoveLike,
+  serviceAddComment,
+  serviceRemoveComment,
 } from "../services/post.service.js";
 
 const create = async (req, res) => {
@@ -213,6 +215,7 @@ const update = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
 const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -229,18 +232,71 @@ const deletePost = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
 const likePost = async (req, res) => {
-  const postId = req.params.id;
-  const { userId } = req.userId;
+  try {
+    const postId = req.params.id;
+    const { userId } = req.userId;
 
-  const like = await serviceLikePost(postId, userId);
+    const like = await serviceLikePost(postId, userId);
 
-  if (!like) {
-    await serviceRemoveLike(postId, userId);
-    return res.status(200).send({ message: "Like removed" });
+    if (!like) {
+      await serviceRemoveLike(postId, userId);
+      return res.status(200).send({ message: "Like removed" });
+    }
+
+    res.status(200).send({ message: "Liked!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
   }
+};
 
-  res.status(200).send({ message: "Liked!" });
+const addComment = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId;
+    const { comment } = req.body.comment;
+
+    if (!comment) {
+      res.status(400).send({ message: "Please write a comment" });
+    }
+
+    await serviceAddComment(postId, userId, comment);
+
+    res.send("Comment created successfully!");
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+const removeComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const userId = req.userId;
+
+    const deletedComment = await serviceRemoveComment(
+      postId,
+      userId,
+      commentId
+    );
+
+    const commentFinder = deletedCommentcomments.find(
+      (comment) => comment.commentId === commentId
+    );
+    if (!commentFinder) {
+      return res
+        .status(404)
+        .send({ message: "Comment not found" });
+    }
+    if (commentFinder.userId !== userId) {
+      return res
+        .status(400)
+        .send({ message: "You don't have permission to delete that comment" });
+    }
+    res.send("Comment removed!");
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 export {
@@ -253,4 +309,6 @@ export {
   update,
   deletePost,
   likePost,
+  addComment,
+  removeComment,
 };

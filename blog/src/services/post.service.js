@@ -39,6 +39,19 @@ const serviceLikePost = (postId, userId) =>
 const serviceRemoveLike = (postId, userId) =>
   Post.findOneAndUpdate({ _id: postId }, { $pull: { likes: { userId } } });
 
+const serviceAddComment = (postId, userId, comment) => {
+  const commentId = Math.floor(Math.random() * Date.now).toString(36);
+  return Post.findOneAndUpdate(
+    { _id: postId },
+    {
+      $push: {
+        comments: { commentId, userId, comment, createdAt: new Date() },
+      },
+    }
+  );
+};
+
+const serviceRemoveComment = (postId, userId, commentId) => Post.findOneAndUpdate({ _id: postId }, { $pull: { comments: {commentId, userId}}});
 export {
   serviceCreate,
   serviceFindAll,
@@ -51,4 +64,6 @@ export {
   serviceDeletePost,
   serviceLikePost,
   serviceRemoveLike,
+  serviceAddComment,
+  serviceRemoveComment,
 };
